@@ -7,13 +7,9 @@ import { IngredientDetailsUI } from '../ui/ingredient-details';
 export const IngredientDetails: FC = () => {
   const { id } = useParams();
 
-  const ingredients = useSelector(
-    (state) => state.ingredients.items
-  );
+  const ingredients = useSelector((state) => state.ingredients.items);
 
-  const ingredientData = ingredients.find(
-    (item) => item._id === id
-  );
+  const ingredientData = ingredients.find((item) => item._id === id);
 
   if (!ingredientData) {
     return <Preloader />;

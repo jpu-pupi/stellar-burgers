@@ -1,39 +1,33 @@
 import { FC, useMemo } from 'react';
+import { useSelector } from '../../services/store';
 import { TIngredient, TConstructorIngredient } from '@utils-types';
 import { BurgerConstructorUI } from '@ui';
 
 export const BurgerConstructor: FC = () => {
-  /** TODO: взять переменные constructorItems, orderRequest и orderModalData из стора */
-  const constructorItems = {
-    bun: null as TIngredient | null,
-    ingredients: [] as TConstructorIngredient[]
-  };
+  const { bun, ingredients, orderRequest, orderModalData } = useSelector(
+    (state) => state.burgerConstructor
+  );
 
-  const orderRequest = false;
-
-  const orderModalData = null;
+  const constructorItems = { bun, ingredients };
 
   const onOrderClick = () => {
-    if (!constructorItems.bun || orderRequest) return;
+    if (!bun || orderRequest) return;
   };
+
   const closeOrderModal = () => {};
 
   const price = useMemo(
     () =>
-      (constructorItems.bun ? constructorItems.bun.price * 2 : 0) +
-      constructorItems.ingredients.reduce(
-        (s: number, v: TConstructorIngredient) => s + v.price,
-        0
-      ),
-    [constructorItems]
+      (bun ? bun.price * 2 : 0) + ingredients.reduce((s, v) => s + v.price, 0),
+    [bun, ingredients]
   );
 
   return (
     <BurgerConstructorUI
-      price={price}
-      orderRequest={orderRequest}
       constructorItems={constructorItems}
+      orderRequest={orderRequest}
       orderModalData={orderModalData}
+      price={price}
       onOrderClick={onOrderClick}
       closeOrderModal={closeOrderModal}
     />
