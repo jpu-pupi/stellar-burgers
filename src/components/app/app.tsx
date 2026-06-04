@@ -32,7 +32,7 @@ const App = () => {
   const ingredients = useSelector((state) => state.ingredients.items);
   const error = useSelector((state) => state.ingredients.error);
   const location = useLocation();
-  const state = location.state as { backgroundLocation?: Location };
+  const state = location.state as { background?: Location };
 
   const dispatch = useDispatch();
 
@@ -66,7 +66,7 @@ const App = () => {
         </div>
       ) : (
         <>
-          <Routes location={state?.backgroundLocation || location}>
+          <Routes location={state?.background || location}>
             <Route path='/' element={<ConstructorPage />} />
             <Route path='/feed' element={<Feed />} />
             <Route path='/login' element={<Login />} />
@@ -75,10 +75,11 @@ const App = () => {
             <Route path='/reset-password' element={<ResetPassword />} />
             <Route path='/profile' element={<Profile />} />
             <Route path='/profile/orders' element={<ProfileOrders />} />
+            <Route path='/ingredients/:id' element={<IngredientDetails />} />
             <Route path='*' element={<NotFound404 />} />
           </Routes>
 
-          {state?.backgroundLocation && (
+          {state?.background && (
             <Routes>
               <Route
                 path='/feed/:number'

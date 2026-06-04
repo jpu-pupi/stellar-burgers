@@ -4,10 +4,10 @@ import { BurgerConstructorUI } from '@ui';
 
 export const BurgerConstructor: FC = () => {
   /** TODO: взять переменные constructorItems, orderRequest и orderModalData из стора */
- const constructorItems = {
-  bun: null as TIngredient | null,
-  ingredients: [] as TConstructorIngredient[]
-};
+  const constructorItems = {
+    bun: null as TIngredient | null,
+    ingredients: [] as TConstructorIngredient[]
+  };
 
   const orderRequest = false;
 
