@@ -1,9 +1,13 @@
 import { createSlice, PayloadAction, nanoid } from '@reduxjs/toolkit';
 import { TIngredient } from '@utils-types';
 
+type TConstructorIngredient = TIngredient & {
+  id: string;
+};
+
 type ConstructorState = {
   bun: TIngredient | null;
-  ingredients: TIngredient[];
+  ingredients: TConstructorIngredient[];
   orderRequest: boolean;
   orderModalData: any;
 };
@@ -20,20 +24,23 @@ const burgerConstructorSlice = createSlice({
   initialState,
   reducers: {
     addIngredient: (state, action: PayloadAction<TIngredient>) => {
-      const item = action.payload;
+  const item = action.payload;
 
-      if (item.type === 'bun') {
-        state.bun = item;
-      } else {
-        state.ingredients.push(item);
-      }
-    },
+  if (item.type === 'bun') {
+    state.bun = item;
+  } else {
+    state.ingredients.push({
+      ...item,
+      id: nanoid()
+    });
+  }
+},
 
     removeIngredient: (state, action: PayloadAction<string>) => {
-      state.ingredients = state.ingredients.filter(
-        (item) => item._id !== action.payload
-      );
-    },
+  state.ingredients = state.ingredients.filter(
+    (item) => item.id !== action.payload
+  );
+},
 
     moveIngredientUp: (state, action: PayloadAction<number>) => {
       const i = action.payload;
