@@ -24,23 +24,23 @@ const burgerConstructorSlice = createSlice({
   initialState,
   reducers: {
     addIngredient: (state, action: PayloadAction<TIngredient>) => {
-  const item = action.payload;
+      const item = action.payload;
 
-  if (item.type === 'bun') {
-    state.bun = item;
-  } else {
-    state.ingredients.push({
-      ...item,
-      id: nanoid()
-    });
-  }
-},
+      if (item.type === 'bun') {
+        state.bun = item;
+      } else {
+        state.ingredients.push({
+          ...item,
+          id: nanoid()
+        });
+      }
+    },
 
     removeIngredient: (state, action: PayloadAction<string>) => {
-  state.ingredients = state.ingredients.filter(
-    (item) => item.id !== action.payload
-  );
-},
+      state.ingredients = state.ingredients.filter(
+        (item) => item.id !== action.payload
+      );
+    },
 
     moveIngredientUp: (state, action: PayloadAction<number>) => {
       const i = action.payload;

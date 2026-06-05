@@ -19,13 +19,13 @@ import { IngredientDetails } from '@components';
 import { Preloader } from '@ui';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import { Location } from 'react-router-dom';
 
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from '../../services/store';
 import { fetchIngredients } from '../../services/slices/ingredientsSlice';
 
 const App = () => {
-  /** TODO: взять переменные из стора */
   const isIngredientsLoading = useSelector(
     (state) => state.ingredients.isLoading
   );
