@@ -9,6 +9,7 @@ import { registerUserApi, TRegisterData, updateUserApi } from '@api';
 type UserState = {
   user: TUser | null;
   isAuth: boolean;
+  isAuthChecked: boolean;
   isLoading: boolean;
   error: string | null;
 };
@@ -16,6 +17,7 @@ type UserState = {
 const initialState: UserState = {
   user: null,
   isAuth: false,
+  isAuthChecked: false,
   isLoading: false,
   error: null
 };
@@ -78,10 +80,12 @@ const userSlice = createSlice({
         state.isLoading = false;
         state.user = action.payload;
         state.isAuth = true;
+        state.isAuthChecked = true;
       })
       .addCase(getUser.rejected, (state, action) => {
         state.isLoading = false;
         state.isAuth = false;
+        state.isAuthChecked = true;
         state.error = action.error.message || 'Ошибка получения пользователя';
       })
       .addCase(loginUser.pending, (state) => {
@@ -137,6 +141,9 @@ const userSlice = createSlice({
 export const selectUser = (state: RootState) => state.user.user;
 
 export const selectIsAuth = (state: RootState) => state.user.isAuth;
+
+export const selectIsAuthChecked = (state: RootState) =>
+  state.user.isAuthChecked;
 
 export const selectUserLoading = (state: RootState) => state.user.isLoading;
 

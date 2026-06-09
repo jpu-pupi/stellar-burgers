@@ -32,7 +32,16 @@ import { Location } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from '../../services/store';
 import { fetchIngredients } from '../../services/slices/ingredientsSlice';
-import { getUser, selectIsAuth } from '../../services/slices/userSlice';
+import {
+  getUser,
+  selectIsAuth,
+  selectIsAuthChecked
+} from '../../services/slices/userSlice';
+
+type ProtectedRouteProps = {
+  children: React.ReactElement;
+  onlyUnAuth?: boolean;
+};
 
 const App = () => {
   const dispatch = useDispatch();
@@ -46,25 +55,34 @@ const App = () => {
   const state = location.state as { background?: Location };
 
   const isAuth = useSelector(selectIsAuth);
+  const isAuthChecked = useSelector(selectIsAuthChecked);
 
-  // 👇 ProtectedRoute внутри App
-  const ProtectedRoute = ({ children }: { children: React.ReactElement }) => {
+  const ProtectedRoute = ({
+    children,
+    onlyUnAuth = false
+  }: ProtectedRouteProps) => {
     const location = useLocation();
 
-    if (!isAuth) {
+    if (!isAuthChecked) {
+      return <Preloader />;
+    }
+
+    if (onlyUnAuth && isAuth) {
+      return <Navigate to='/' replace />;
+    }
+
+    if (!onlyUnAuth && !isAuth) {
       return <Navigate to='/login' replace state={{ from: location }} />;
     }
 
     return children;
   };
 
-  // загрузка данных
   useEffect(() => {
     dispatch(fetchIngredients());
     dispatch(getUser());
   }, [dispatch]);
 
-  // модалка маршрутов
   const ModalRoute = ({ children }: { children: React.ReactNode }) => {
     const navigate = useNavigate();
 
@@ -93,10 +111,41 @@ const App = () => {
             <Route path='/' element={<ConstructorPage />} />
             <Route path='/feed' element={<Feed />} />
 
-            <Route path='/login' element={<Login />} />
-            <Route path='/register' element={<Register />} />
-            <Route path='/forgot-password' element={<ForgotPassword />} />
-            <Route path='/reset-password' element={<ResetPassword />} />
+            <Route
+              path='/login'
+              element={
+                <ProtectedRoute onlyUnAuth>
+                  <Login />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path='/register'
+              element={
+                <ProtectedRoute onlyUnAuth>
+                  <Register />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path='/forgot-password'
+              element={
+                <ProtectedRoute onlyUnAuth>
+                  <ForgotPassword />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path='/reset-password'
+              element={
+                <ProtectedRoute onlyUnAuth>
+                  <ResetPassword />
+                </ProtectedRoute>
+              }
+            />
 
             <Route
               path='/profile'
@@ -117,6 +166,17 @@ const App = () => {
             />
 
             <Route path='/ingredients/:id' element={<IngredientDetails />} />
+
+            <Route path='/feed/:number' element={<OrderInfo />} />
+
+            <Route
+              path='/profile/orders/:number'
+              element={
+                <ProtectedRoute>
+                  <OrderInfo />
+                </ProtectedRoute>
+              }
+            />
             <Route path='*' element={<NotFound404 />} />
           </Routes>
 
@@ -143,9 +203,11 @@ const App = () => {
               <Route
                 path='/profile/orders/:number'
                 element={
-                  <ModalRoute>
-                    <OrderInfo />
-                  </ModalRoute>
+                  <ProtectedRoute>
+                    <ModalRoute>
+                      <OrderInfo />
+                    </ModalRoute>
+                  </ProtectedRoute>
                 }
               />
             </Routes>
