@@ -32,16 +32,9 @@ import { Location } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from '../../services/store';
 import { fetchIngredients } from '../../services/slices/ingredientsSlice';
-import {
-  getUser,
-  selectIsAuth,
-  selectIsAuthChecked
-} from '../../services/slices/userSlice';
+import { getUser } from '../../services/slices/userSlice';
 
-type ProtectedRouteProps = {
-  children: React.ReactElement;
-  onlyUnAuth?: boolean;
-};
+import { ProtectedRoute } from '../protected-route';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -53,30 +46,6 @@ const App = () => {
 
   const location = useLocation();
   const state = location.state as { background?: Location };
-
-  const isAuth = useSelector(selectIsAuth);
-  const isAuthChecked = useSelector(selectIsAuthChecked);
-
-  const ProtectedRoute = ({
-    children,
-    onlyUnAuth = false
-  }: ProtectedRouteProps) => {
-    const location = useLocation();
-
-    if (!isAuthChecked) {
-      return <Preloader />;
-    }
-
-    if (onlyUnAuth && isAuth) {
-      return <Navigate to='/' replace />;
-    }
-
-    if (!onlyUnAuth && !isAuth) {
-      return <Navigate to='/login' replace state={{ from: location }} />;
-    }
-
-    return children;
-  };
 
   useEffect(() => {
     dispatch(fetchIngredients());
