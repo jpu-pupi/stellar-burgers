@@ -1,5 +1,5 @@
 import {
-    fetchIngredients,
+  fetchIngredients,
   selectIngredients,
   selectIngredientsLoading,
   selectIngredientsError,
@@ -69,7 +69,7 @@ describe('ingredientsSlice', () => {
     test('должен обрабатывать экшен fetchIngredients.pending', () => {
       const action = { type: fetchIngredients.pending.type };
       const state = ingredientsReducer(initialState, action);
-      
+
       expect(state).toEqual({
         items: [],
         isLoading: true,
@@ -78,12 +78,12 @@ describe('ingredientsSlice', () => {
     });
 
     test('должен обрабатывать экшен fetchIngredients.fulfilled', () => {
-      const action = { 
-        type: fetchIngredients.fulfilled.type, 
-        payload: mockIngredients 
+      const action = {
+        type: fetchIngredients.fulfilled.type,
+        payload: mockIngredients
       };
       const state = ingredientsReducer(initialState, action);
-      
+
       expect(state).toEqual({
         items: mockIngredients,
         isLoading: false,
@@ -93,12 +93,12 @@ describe('ingredientsSlice', () => {
 
     test('должен обрабатывать экшен fetchIngredients.rejected', () => {
       const errorMessage = 'Ошибка загрузки';
-      const action = { 
-        type: fetchIngredients.rejected.type, 
-        error: { message: errorMessage } 
+      const action = {
+        type: fetchIngredients.rejected.type,
+        error: { message: errorMessage }
       };
       const state = ingredientsReducer(initialState, action);
-      
+
       expect(state).toEqual({
         items: [],
         isLoading: false,
@@ -112,7 +112,7 @@ describe('ingredientsSlice', () => {
       const state = ingredientsReducer(initialState, {
         type: fetchIngredients.pending.type
       });
-      
+
       expect(state.isLoading).toBe(true);
       expect(state.error).toBeNull();
     });
@@ -120,12 +120,12 @@ describe('ingredientsSlice', () => {
     test('должен устанавливать isLoading: false и загружать данные при fulfilled', () => {
       const state = ingredientsReducer(
         { ...initialState, isLoading: true },
-        { 
-          type: fetchIngredients.fulfilled.type, 
-          payload: mockIngredients 
+        {
+          type: fetchIngredients.fulfilled.type,
+          payload: mockIngredients
         }
       );
-      
+
       expect(state.isLoading).toBe(false);
       expect(state.items).toEqual(mockIngredients);
       expect(state.error).toBeNull();
@@ -135,12 +135,12 @@ describe('ingredientsSlice', () => {
       const errorMessage = 'Ошибка загрузки ингредиентов';
       const state = ingredientsReducer(
         { ...initialState, isLoading: true },
-        { 
-          type: fetchIngredients.rejected.type, 
-          error: { message: errorMessage } 
+        {
+          type: fetchIngredients.rejected.type,
+          error: { message: errorMessage }
         }
       );
-      
+
       expect(state.isLoading).toBe(false);
       expect(state.items).toEqual([]);
       expect(state.error).toBe(errorMessage);
@@ -151,12 +151,12 @@ describe('ingredientsSlice', () => {
         type: fetchIngredients.rejected.type,
         error: {}
       });
-      
+
       expect(state.error).toBe('Ошибка загрузки');
     });
   });
 
-    describe('селекторы', () => {
+  describe('селекторы', () => {
     const mockState = {
       ingredients: {
         items: mockIngredients,
@@ -218,4 +218,4 @@ describe('ingredientsSlice', () => {
       expect(result).toBeNull();
     });
   });
-  });
+});

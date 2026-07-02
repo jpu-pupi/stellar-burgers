@@ -82,12 +82,11 @@ test('создание заказа', async ({ page, context }) => {
     .getByRole('button')
     .click();
 
+  await expect(page.locator('#modals').getByText('12345')).toHaveCount(0);
   await page.getByRole('button', { name: 'Оформить заказ' }).click();
 
-  await expect(page.getByText('12345')).toBeVisible();
-
-  await expect(page.getByText('12345')).toBeVisible();
-
+  await expect(page.locator('#modals').getByText('12345')).toBeVisible();
+  
   await expect(page.getByText('Выберите начинку')).toBeVisible();
   await expect(page.getByText('Выберите булки').first()).toBeVisible();
 
