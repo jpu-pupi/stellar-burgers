@@ -1,100 +1,65 @@
 import { test, expect } from '@playwright/test';
 
-test('создание заказа', async ({ page, context }) => {
-  await context.addCookies([
-    {
-      name: 'accessToken',
-      value: 'mock-access-token',
-      domain: 'localhost',
-      path: '/'
-    }
-  ]);
+test.describe('Создание заказа', () => {
+  test.beforeEach(async ({ page, context }) => {
+    await context.addCookies([
+      {
+        name: 'accessToken',
+        value: 'mock-access-token',
+        domain: 'localhost',
+        path: '/'
+      }
+    ]);
 
-  await page.addInitScript(() => {
-    localStorage.setItem('refreshToken', 'mock-refresh-token');
-  });
-
-  await page.route('**/auth/user', async (route) => {
-    await route.fulfill({
-      status: 200,
-      contentType: 'application/json',
-      body: JSON.stringify({
-        success: true,
-        user: {
-          name: 'Test User',
-          email: 'test@test.ru'
-        }
-      })
+    await page.addInitScript(() => {
+      localStorage.setItem('refreshToken', 'mock-refresh-token');
     });
-  });
 
-  await page.route('**/orders', async (route) => {
-    await route.fulfill({
-      status: 200,
-      contentType: 'application/json',
-      body: JSON.stringify({
-        success: true,
-        name: 'Тестовый бургер',
-        order: {
-          number: 12345
-        }
-      })
+    await page.routeFromHAR('./hars/ingredients.har', {
+      url: '**/api/ingredients',
+      update: false
     });
-  });
 
-  await page.route('**/api/ingredients', async (route) => {
-    await route.fulfill({
-      status: 200,
-      contentType: 'application/json',
-      body: JSON.stringify({
-        success: true,
-        data: [
-          {
-            _id: '1',
-            name: 'Моя тестовая булка',
-            type: 'bun',
-            price: 100,
-            image: 'img'
-          },
-          {
-            _id: '2',
-            name: 'Моя тестовая котлета',
-            type: 'main',
-            price: 200,
-            image: 'img'
-          }
-        ]
-      })
+    await page.routeFromHAR('./hars/user.har', {
+      url: '**/api/auth/user',
+      update: false
     });
+
+    await page.routeFromHAR('./hars/order.har', {
+      url: '**/api/orders',
+      update: false
+    });
+
+    await page.goto('/');
   });
 
-  await page.goto('http://localhost:4000/');
+  test('создание заказа', async ({ page }) => {
+    await page
+      .getByRole('listitem')
+      .filter({ hasText: 'Моя тестовая булкаДобавить' })
+      .getByRole('button')
+      .click();
 
-  await page
-    .getByRole('listitem')
-    .filter({ hasText: 'Моя тестовая булка' })
-    .getByRole('button')
-    .click();
+    await page
+      .getByRole('listitem')
+      .filter({ hasText: 'Моя тестовая котлетаДобавить' })
+      .getByRole('button')
+      .click();
 
-  await page
-    .getByRole('listitem')
-    .filter({ hasText: 'Моя тестовая котлета' })
-    .getByRole('button')
-    .click();
+    await expect(page.locator('#modals').getByText('12345')).toHaveCount(0);
 
-  await expect(page.locator('#modals').getByText('12345')).not.toBeVisible();
+    await page.getByRole('button', { name: 'Оформить заказ' }).click();
 
-  await page.getByRole('button', { name: 'Оформить заказ' }).click();
- 
-  const orderModal = page.locator('#modals');
+    const orderModal = page.locator('#modals');
 
-  await expect(orderModal.getByText('12345')).toBeVisible();
-  await expect(orderModal.getByRole('button')).toBeVisible();
+    await expect(orderModal.getByText('12345')).toBeVisible();
+    await expect(orderModal.getByRole('button')).toBeVisible();
 
-  await expect(page.getByText('Выберите начинку')).toBeVisible();
-  await expect(page.getByText('Выберите булки').first()).toBeVisible();
+    await expect(page.getByText('Выберите начинку')).toBeVisible();
+    await expect(page.getByText('Выберите булки').first()).toBeVisible();
 
-  await page.locator('#modals').getByRole('button').click();
+    await orderModal.getByRole('button').click();
 
-  await expect(page.locator('#modals')).not.toBeVisible();
+    await expect(page.locator('#modals')).not.toBeVisible();
+  });
 });

@@ -92,13 +92,17 @@ test('открытие модального окна ингредиента', as
 
   await page.getByText('Моя тестовая булка').click();
 
-  await expect(
-    page.locator('#modals').getByText('Моя тестовая булка')
-  ).toBeVisible();
+  const modal = page.locator('#modals');
 
-  await expect(
-    page.locator('#modals').getByText('Калории, ккал')
-  ).toBeVisible();
+  await expect(modal.getByText('Моя тестовая булка')).toBeVisible();
+
+  // Проверяем, что открылся именно кликнутый ингредиент,
+  // сверяя его КБЖУ из hars/ingredients.har
+  await expect(modal.getByText('Калории, ккал')).toBeVisible();
+  await expect(modal.getByText('999')).toBeVisible();
+  await expect(modal.getByText('100')).toBeVisible();
+  await expect(modal.getByText('50')).toBeVisible();
+  await expect(modal.getByText('200')).toBeVisible();
 });
 
 test('закрытие модального окна по клику на крестик', async ({ page }) => {
