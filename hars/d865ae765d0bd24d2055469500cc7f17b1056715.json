@@ -1,0 +1,47 @@
+{
+  "success": true,
+  "data": [
+    {
+      "_id": "mocked_1",
+      "name": "Моя тестовая булка",
+      "type": "bun",
+      "proteins": 100,
+      "fat": 50,
+      "carbohydrates": 200,
+      "calories": 999,
+      "price": 777,
+      "image": "https://code.s3.yandex.net/react/code/bun-02.png",
+      "image_mobile": "https://code.s3.yandex.net/react/code/bun-02-mobile.png",
+      "image_large": "https://code.s3.yandex.net/react/code/bun-02-large.png",
+      "__v": 0
+    },
+    {
+      "_id": "mocked_2",
+      "name": "Моя тестовая котлета",
+      "type": "main",
+      "proteins": 300,
+      "fat": 100,
+      "carbohydrates": 50,
+      "calories": 500,
+      "price": 300,
+      "image": "https://code.s3.yandex.net/react/code/meat-01.png",
+      "image_mobile": "https://code.s3.yandex.net/react/code/meat-01-mobile.png",
+      "image_large": "https://code.s3.yandex.net/react/code/meat-01-large.png",
+      "__v": 0
+    },
+    {
+      "_id": "mocked_3",
+      "name": "Мой тестовый соус",
+      "type": "sauce",
+      "proteins": 10,
+      "fat": 5,
+      "carbohydrates": 100,
+      "calories": 50,
+      "price": 50,
+      "image": "https://code.s3.yandex.net/react/code/sauce-03.png",
+      "image_mobile": "https://code.s3.yandex.net/react/code/sauce-03-mobile.png",
+      "image_large": "https://code.s3.yandex.net/react/code/sauce-03-large.png",
+      "__v": 0
+    }
+  ]
+}
